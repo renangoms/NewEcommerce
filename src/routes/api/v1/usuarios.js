@@ -14,7 +14,7 @@ router.post('/recuperar-senha', usuarioController.createRecovery);
 router.get('/senha-recuperada', usuarioController.showCompleteRecovery);
 router.post('/senha-recuperada', usuarioController.completeRecovery);
 
-router.get('/', auth.required, usuarioController.index); // Testado
-router.get('/:id', auth.required, usuarioController.show); // Testado
+router.get('/', auth.required, usuarioController.index);
+router.get('/:id', auth.required, usuarioController.show);
 
 module.exports = router;

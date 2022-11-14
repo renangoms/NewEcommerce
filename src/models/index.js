@@ -1,1 +1,3 @@
 require('./usuario');
+
+require('./loja');
