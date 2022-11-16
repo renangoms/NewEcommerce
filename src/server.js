@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const cors = require('cors');
+const { CelebrateError } = require('celebrate');
 
 // START
 const app = express();
@@ -52,15 +53,28 @@ app.use((req, res, next) => {
   next(err);
 });
 
-// ROTA - 422, 500, 401
+// // ROTA - 422, 500, 401
+// app.use((err, req, res, next) => {
+//   res.status(err.status || 500);
+//   if (err.status !== 404) console.warn('Error: ', err.message, new Date());
+//   res.json(err);
+// });
 app.use((err, req, res, next) => {
-  res.status(err.status || 500);
-  if (err.status !== 404) console.warn('Error: ', err.message, new Date());
-  res.json({ errors: { message: err.message, status: err.status } });
+  if (err instanceof CelebrateError) {
+    const errorBody = err.details.get('body');
+    return res.status(400).json({
+      message: errorBody?.message,
+    });
+  }
+
+  return res.status(500).json({
+    status: 'Error',
+    message: `Internal server error': ${err.message}`,
+  });
 });
 
 // ESCUTAR
 app.listen(PORT, (err) => {
   if (err) throw err;
-  console.log(`🔥 Server started at http://localhost:${PORT}`);
+  console.log(`Rodando na localhost:${PORT}`);
 });
